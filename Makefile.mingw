@@ -1,0 +1,44 @@
+#
+# Tiny BASIC Interpreter and Compiler Project
+# Makefile for MinGW Cross-compiler (Linux->Windows)
+# 
+# Released as Public Domain by Damian Gareth Walker 2019
+# Created: 21-Sep-2019
+#
+
+# Target
+TARGET = tinybasic.exe
+
+# Paths and extensions
+SRCDIR := src
+INCDIR := inc
+DOCDIR := doc
+BUILDDIR := obj
+TARGETDIR := bin
+INSTALLDIR := /usr/local
+SRCEXT := c
+HDREXT := h
+OBJEXT := o
+
+# Compiler flags
+CC := x86_64-w64-mingw32-gcc
+CFLAGS := -Wall
+INC := -I$(INCDIR) -I/usr/local/include
+
+# Generate file lists
+SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
+OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT)))
+
+# Default make
+all: $(TARGETDIR)/$(TARGET)
+
+$(TARGETDIR)/$(TARGET): $(OBJECTS)
+	$(CC) -o $(TARGETDIR)/$(TARGET) $(OBJECTS)
+
+$(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
+	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
+
+# Cleanup
+clean:
+	rm -f $(BUILDDIR)/*.$(OBJEXT)
+	rm -f $(TARGETDIR)/$(TARGET)
